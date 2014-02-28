@@ -78,7 +78,7 @@ public class PianoMachine {
      * @return
      */
     public boolean toggleRecording() {
-    	return true;
+    	return false;
     	//TODO: implement for question 4
     }
     
@@ -87,7 +87,6 @@ public class PianoMachine {
      */
     protected void playback() {    	
         //TODO: implement for question 4
-    	
     }
 
 }

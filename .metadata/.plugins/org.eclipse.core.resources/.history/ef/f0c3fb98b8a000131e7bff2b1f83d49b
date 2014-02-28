@@ -1,11 +1,8 @@
 package piano;
 
-import java.util.ArrayList;
-
 import javax.sound.midi.MidiUnavailableException;
 
 import midi.*;
-import music.NoteEvent;
 import music.Pitch;
 
 public class PianoMachine {
@@ -13,7 +10,6 @@ public class PianoMachine {
 	private Midi midi;
 	Instrument instr = Instrument.PIANO;
 	private int pitch;
-	private ArrayList<NoteEvent> recording = new ArrayList<NoteEvent>();
     
 	/**
 	 * constructor for PianoMachine.
@@ -72,22 +68,15 @@ public class PianoMachine {
     	if(pitch > -24) pitch -= 12;
     }
     
-    /**
-     * Toggles recording for the midi. If on, return false.
-     * One it finishes recording, it returns true and can be playedback.
-     * @return
-     */
+    //TODO write method spec
     public boolean toggleRecording() {
-    	return true;
+    	return false;
     	//TODO: implement for question 4
     }
     
-    /**
-     * Plays the recording that was saved
-     */
+    //TODO write method spec
     protected void playback() {    	
         //TODO: implement for question 4
-    	
     }
 
 }
