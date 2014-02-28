@@ -2,12 +2,14 @@ package piano;
 
 import javax.sound.midi.MidiUnavailableException;
 
-import midi.Midi;
+import midi.*;
 import music.Pitch;
 
 public class PianoMachine {
 	
 	private Midi midi;
+	Instrument instr = Instrument.PIANO;
+	private int pitch;
     
 	/**
 	 * constructor for PianoMachine.
@@ -24,32 +26,46 @@ public class PianoMachine {
         }
     }
     
-    //TODO write method spec
+    /**
+     * Method that begins a certain note
+     * @param rawPitch : Frequency of the note to begin
+     */
     public void beginNote(Pitch rawPitch) {
-    	midi.beginNote(new Pitch(0).toMidiFrequency());
+    	midi.beginNote(rawPitch.transpose(pitch).toMidiFrequency(), instr);
     	//TODO implement for question 1
 
     }
     
-    //TODO write method spec
+    /**
+     * Method that ends the playing of a certain note
+     * @param rawPitch : Frequency of the note to end
+     */
     public void endNote(Pitch rawPitch) {
-    	midi.endNote(new Pitch(0).toMidiFrequency());
+    	midi.endNote(rawPitch.transpose(pitch).toMidiFrequency(), instr);
     	//TODO implement for question 1
     }
     
-    //TODO write method spec
+    /**
+     * Changes the current instrument being played to the next instrument in
+     * the list
+     */
     public void changeInstrument() {
-       	//TODO: implement for question 2
+      instr = instr.next();
+       
     }
     
-    //TODO write method spec
+    /**
+     * Shifts the notes up by one octave (12 semitones)
+     */
     public void shiftUp() {
-    	//TODO: implement for question 3
+    	if(pitch <= 24) pitch+= 12;
     }
     
-    //TODO write method spec
+    /**
+     * Shifts the notes down by one octave (12 semitones)
+     */
     public void shiftDown() {
-    	//TODO: implement for question 3
+    	if(pitch >= -24) pitch -= 12;
     }
     
     //TODO write method spec

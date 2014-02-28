@@ -28,6 +28,17 @@ public class PianoMachineTest {
 
         System.out.println(midi.history());
         assertEquals(expected0,midi.history());
+        
+        String expected1 = "on(62,PIANO) wait(100) off(62,PIANO)";
+        
+        midi.clearHistory();
+        
+        pm.beginNote(new Pitch(2));
+        Midi.wait(100);
+        pm.endNote(new Pitch(2));
+        
+        System.out.println(midi.history());
+        assertEquals(expected1, midi.history());
     }
 
 }
