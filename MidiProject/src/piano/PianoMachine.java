@@ -13,7 +13,9 @@ public class PianoMachine {
 	private Midi midi;
 	Instrument instr = Instrument.PIANO;
 	private int pitch;
-	private ArrayList<NoteEvent> recording = new ArrayList<NoteEvent>();
+	private ArrayList<NoteEvent> track = new ArrayList<NoteEvent>();
+	private boolean recording = false;
+	private long trackEnd = 0;
     
 	/**
 	 * constructor for PianoMachine.
@@ -36,7 +38,7 @@ public class PianoMachine {
      */
     public void beginNote(Pitch rawPitch) {
     	midi.beginNote(rawPitch.transpose(pitch).toMidiFrequency(), instr);
-    	//TODO implement for question 1
+    	if(recording)track.add(new NoteEvent(rawPitch.transpose(pitch), System.currentTimeMillis(), instr, NoteEvent.Kind.start));
 
     }
     
@@ -46,7 +48,7 @@ public class PianoMachine {
      */
     public void endNote(Pitch rawPitch) {
     	midi.endNote(rawPitch.transpose(pitch).toMidiFrequency(), instr);
-    	//TODO implement for question 1
+    	if(recording)track.add(new NoteEvent(rawPitch.transpose(pitch), System.currentTimeMillis(), instr, NoteEvent.Kind.stop));
     }
     
     /**
@@ -78,16 +80,73 @@ public class PianoMachine {
      * @return
      */
     public boolean toggleRecording() {
-    	return true;
-    	//TODO: implement for question 4
+    	recording = !recording;
+    	
+    	
+    	if(recording){
+    		track = new ArrayList<NoteEvent>();
+    	}else{
+    		trackEnd = System.currentTimeMillis();
+    	}
+    	return recording;
     }
     
     /**
      * Plays the recording that was saved
      */
-    protected void playback() {    	
-        //TODO: implement for question 4
+    protected void playback() {
     	
+    	NoteEvent e = null;
+    	
+    	for(int i = 0; i < track.size(); i++){
+    		e = track.get(i);
+    		
+    		if(e.getKind() == NoteEvent.Kind.start){
+    			midi.beginNote(e.getPitch().toMidiFrequency(), e.getInstr());
+    			final int start = i;
+    			final NoteEvent tmp = e;
+    						
+    			new Thread(){
+    				
+    				@Override
+    				public void run(){
+	    				boolean hasFound = false;
+	    				NoteEvent event = tmp;
+	    				long endTime = 0;
+	    				long startTime = System.currentTimeMillis();
+	    				
+	    				while(!hasFound){
+	    					for(int j = start; j < track.size(); j++){
+	    						NoteEvent mTmp = track.get(j);
+	    						if(mTmp.getKind() == NoteEvent.Kind.stop){
+	    							if(mTmp.getInstr() == event.getInstr() && mTmp.getPitch() == event.getPitch()){
+	    								hasFound = true;
+	    								j = track.size();
+	    								endTime = mTmp.getTime();
+	    							}
+	    						}
+	    					}
+	    					
+	    					endTime = trackEnd;
+	    					hasFound = true;
+	    				}
+	    				
+	    				while(endTime - tmp.getTime() > System.currentTimeMillis() - startTime){
+	    					//Delay to stop it from ending too soon.
+	    				}
+	    				
+	    				midi.endNote(tmp.getPitch().toMidiFrequency(), tmp.getInstr());
+	    				
+    				}
+    			}.start();
+    			
+    		}
+    		/**
+    		 * I don't think I need this . . .
+    		 * else if(e.getKind() == NoteEvent.Kind.stop){
+    			midi.endNote(e.getPitch().toMidiFrequency(), e.getInstr());	
+    		}*/ 
+    	}
     }
 
 }
