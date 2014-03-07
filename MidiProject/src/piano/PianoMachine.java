@@ -97,6 +97,7 @@ public class PianoMachine {
     protected void playback() {
     	
     	NoteEvent e = null;
+    	final long startPlaybackTime = System.currentTimeMillis();
     	
     	for(int i = 0; i < track.size(); i++){
     		e = track.get(i);
